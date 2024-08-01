@@ -18,7 +18,7 @@ public class Kullanici {
     private String tcKimlik;
     private LocalDate kayitTarihi;
     private LocalDate dogumTarihi;
-    private Sepet sepet;
+    private Sepet guncelSepet;
     private ArrayList<Sepet> satinAlimGecmisi;
     
     public ArrayList<Sepet> getSatinAlimGecmisi() {
@@ -34,6 +34,15 @@ public class Kullanici {
         this.id = kullaniciCount;
         this.kayitTarihi = LocalDate.now();
         this.satinAlimGecmisi = new ArrayList<Sepet>();
+        this.guncelSepet = new Sepet();
+    }
+
+    public Sepet getGuncelSepet() {
+        return guncelSepet;
+    }
+
+    public void setGuncelSepet(Sepet guncelSepet) {
+        this.guncelSepet = guncelSepet;
     }
 
     public void setIsim(String isim) {

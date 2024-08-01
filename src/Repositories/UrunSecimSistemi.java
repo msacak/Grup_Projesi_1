@@ -38,6 +38,7 @@ public class UrunSecimSistemi {
                 kiyafet.setGender(genderArr[random.nextInt(EGender.values().length)]);
                 kiyafet.setTur(turArr[random.nextInt(ETur.values().length)]);
                 kiyafet.setAdet(random.nextInt(1, 21));
+                kiyafet.setSepetLimit(kiyafet.getAdet()*3/4);
                 db.save(kiyafet);
             }
         }
@@ -48,13 +49,17 @@ public class UrunSecimSistemi {
     
     
     public static void welcomeMenu(Kullanici kullanici) {
-        Sepet sepet = new Sepet();
+        Sepet sepet = kullanici.getGuncelSepet();
+        System.out.println("##### MODA PATIKASI #####");
         while (true) {
             System.out.println("""
                                        1- Urun listele
                                        2- Urun incele
                                        3- Sepeti görüntüle
                                        4- Alisverisi tamamla
+                                       5- Sepetten ürün çıkar
+                                       6- Sepet ürün azalt
+                                       7- Sepetten tüm ürünleri sil
                                        0- Çıkış yap
                                        """);
                                
@@ -89,12 +94,77 @@ public class UrunSecimSistemi {
                     sepet = new Sepet(){};
                     break;
                 }
+                case 5:{
+                    sepettenUrunCikar(sepet);
+                    break;
+                }
+                case 6: sepetUrunAzalt(sepet);
+                break;
+                case 7: sepettenTumUrunleriSil(sepet);
             }
         }
     }
-    
+
+    private static void sepettenTumUrunleriSil(Sepet sepet){
+        sepet.getUrunArrayList().removeAll(sepet.getUrunArrayList());
+        System.out.println("Sepetinizden tüm ürünler kaldırılmıştır.");
+    }
+
+    private static void sepetUrunAzalt(Sepet sepet) {
+        sepetiGoruntule(sepet);
+        System.out.print("Adetini azaltmak istediğiniz ürünün idsini giriniz: ");
+        int urunId = secimYap();
+        Urun urun = findById(sepet,urunId);
+        if(urun==null){
+            System.out.println("Çıkarmak istediğiniz ürün id'si sepette bulunamamıştır.");
+            return;
+        }
+        System.out.print("Kaç adet azaltmak istiyorsunuz: ");
+        int adetAzalt = secimYap();
+        sepet.setToplamFiyat(sepet.getToplamFiyat() - urun.getFiyat()*Math.min(adetAzalt, urun.getAdet()));
+        int adetMin = urun.getAdet()-adetAzalt;
+        urun.setAdet(Math.max(0, adetMin));
+        if(urun.getAdet()==0){
+            sepet.getUrunArrayList().remove(findById(sepet, urunId));
+        }
+
+
+
+
+    }
+
+
+    private static void sepettenUrunCikar(Sepet sepet) {
+        sepetiGoruntule(sepet);
+        System.out.print("Sepetten kaldirmak istediginiz urunun id'sini giriniz: ");
+        int urunId = secimYap();
+        Urun urun = findById(sepet,urunId);
+        if(urun==null){
+            System.out.println("Çıkarmak istediğiniz ürün id'si sepette bulunamamıştır.");
+            return;
+        }
+        sepet.setToplamFiyat(sepet.getToplamFiyat()-(urun.getFiyat()*urun.getAdet()));
+        sepet.getUrunArrayList().remove(findById(sepet, urunId));
+        System.out.println("Ürün sepetinizden kaldırılmıştır.");
+    }
+
+    private static Urun findById(Sepet sepet, int urunId){
+        for (Urun urun:sepet.getUrunArrayList()){
+            if(urun.getId() == urunId) return urun;
+        }
+        return null;
+    }
+
     private static void alisverisiTamamla(Kullanici kullanici, Sepet sepet) {
         kullanici.getSatinAlimGecmisi().add(sepet);
+
+        for(Urun urun : sepet.getUrunArrayList()){
+            Urun siradakiUrun = db.findByID(urun.getId());
+            siradakiUrun.setAdet(siradakiUrun.getAdet()-urun.getAdet());
+        }
+
+        kullanici.setGuncelSepet(new Sepet());
+
         System.out.println("Alisverisiniz gerceklesmistir, kargo bilgileri icin bilgilendirme maili alacaksiniz.  " +
                                    "Bizi sectiginiz icin tesekkur ederiz!");
     }
@@ -116,7 +186,7 @@ public class UrunSecimSistemi {
     // burdan id alıp urunSecenekleri metoduna gidiyoruz.
     public static void urunSec(Sepet sepet){
         while(true) {
-            System.out.println("Almak istediğiniz ürün için id giriniz: ");
+            System.out.print("Almak istediğiniz ürün için id giriniz: ");
             int secim = secimYap();
             Urun urun = db.findByID(secim);
             if (urun == null) {
@@ -189,7 +259,12 @@ public class UrunSecimSistemi {
                     break;
                 }
             }
-            System.out.println("Bu üründen " + urun.getAdet() + " adet bulunmaktadir.");
+            if(sepettekiAdet!=0){
+                System.out.println("Bu üründen " + urun.getAdet() + " adet bulunmaktadir. Sepetinizde " + tempUrun.getAdet() + " adet bu üründen bulunmaktadir.");
+            }
+            else {
+                System.out.println("Bu üründen "+ urun.getAdet() + " adet bulunmaktadır.");
+            }
             System.out.println("Kaç adet almak istersiniz?(Geri donmek icin 0 tuslayiniz");
             int adet = secimYap() + sepettekiAdet;
             if (adet == 0){
