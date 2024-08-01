@@ -1,5 +1,10 @@
 package Repositories.entities;
 
+import Repositories.utilities.EGender;
+import Repositories.utilities.ERenk;
+import Repositories.utilities.ESize;
+import Repositories.utilities.ETur;
+
 public class Kiyafet extends Urun{
 
     private ETur tur;
@@ -59,10 +64,10 @@ public class Kiyafet extends Urun{
                 ", urunAd='" + getUrunAd() + '\'' +
                 ", fiyat=" + getFiyat() +
                 +
-                '}';
+                        '}';
     }
-    
-    
+
+
     @Override
     public String detayliGoruntule() {
         return super.detayliGoruntule() + "Kiyafet{" + "gender=" + getGender() + ", renk=" + getRenk() + ", size=" + getSize() + ", tur=" + getTur() + '}';

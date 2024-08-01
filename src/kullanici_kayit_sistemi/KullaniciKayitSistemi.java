@@ -18,14 +18,16 @@ public class KullaniciKayitSistemi  {
     }
 
     public static void menu() {
-        UrunSecimSistemi.demoVeriOlustur();
-        int secim = -1;  //ddsdsa
+        UrunSecimSistemi.demoVeriOlustur(); //Magazadaki urunleri oluşturmak için.
+        generateData(); // Fake kullanıcı hesabı yaratmak için.
+        int secim = -1;
         do {
             System.out.println("### KULLANICI KAYIT SISTEMI ###");
             System.out.println("1- Kayit Ol");
             System.out.println("2- Giris Yap");
             System.out.println("3- Sifremi Unuttum");
-            System.out.println("8- Demo veri olustur");
+            System.out.println("4- Magazaya anonim gir");
+//            System.out.println("8- Demo veri olustur"); //Şimdilik otomatiğe aldık.
             System.out.println("9- Kullanicilari Goruntule");
             System.out.println("0- Cikis");
             System.out.print("Lutfen bir secim yapiniz : ");
@@ -57,6 +59,9 @@ public class KullaniciKayitSistemi  {
                 sifremiUnuttum();
                 break;
             }
+            case 4: {
+                magazayaAnonimGir();
+            }
             case 8: {
                 generateData();
                 break;
@@ -70,6 +75,10 @@ public class KullaniciKayitSistemi  {
                 break;
             }
         }
+    }
+
+    private static void magazayaAnonimGir() {
+        UrunSecimSistemi.welcomeMenu(null);
     }
 
     private static void kullaniciArayuzu(Kullanici kullanici) {
@@ -141,19 +150,19 @@ public class KullaniciKayitSistemi  {
     }
     
     private static void telNoDegistir(Kullanici kullanici) {
-        //TODO Potansiyel iptal islemleri icin case yapisi kurulabilir.
+
         System.out.println("### Telefon Numarasi Degistirme ###");
         kullanici.setTelNo(telNoAl());
         KullaniciDB.update(kullanici);
     }
     private static void emailDegistir(Kullanici kullanici) {
-        //TODO Potansiyel iptal islemleri icin case yapisi kurulabilir.
+
         System.out.println("### Email Degistirme ###");
         kullanici.setEmail(emailAl());
         KullaniciDB.update(kullanici);
     }
     private static boolean sifreDegistir(Kullanici kullanici) {
-        //TODO Potansiyel iptal islemleri icin case yapisi kurulabilir.
+
         boolean isPasswordChanged = false;
         System.out.println("### Sifre Degistirme ###");
         System.out.print("Lutfen eski sifrenizi giriniz : ");
@@ -211,7 +220,7 @@ public class KullaniciKayitSistemi  {
         }
     }
 
-    private static Kullanici girisYap() {
+    public static Kullanici girisYap() {
         System.out.print("Lutfen kullanici adinizi giriniz : ");
         String username = scanner.nextLine();
         System.out.print("Lutfen sifrenizi giriniz : ");

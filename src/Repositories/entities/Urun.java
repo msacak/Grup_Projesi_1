@@ -6,7 +6,7 @@ public class Urun {
     private String urunAd;
     private Double fiyat;
     private Integer adet=0;
-    private Integer sepetLimit = 0;
+    private Integer sepetLimiti = 0;
     private String aciklama;
 
 
@@ -21,17 +21,17 @@ public class Urun {
         this.adet=adet;
         this.id = urun.getId();
         --idCount;
-        this.sepetLimit=urun.sepetLimit;
+        this.sepetLimiti =urun.sepetLimiti;
 
 
     }
 
-    public Integer getSepetLimit() {
-        return sepetLimit;
+    public Integer getSepetLimiti() {
+        return sepetLimiti;
     }
 
-    public void setSepetLimit(Integer sepetLimit) {
-        this.sepetLimit = sepetLimit;
+    public void setSepetLimiti(Integer sepetLimiti) {
+        this.sepetLimiti = sepetLimiti;
     }
 
     public Integer getAdet() {

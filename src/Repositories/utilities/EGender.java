@@ -1,4 +1,4 @@
-package Repositories.entities;
+package Repositories.utilities;
 
 public enum EGender {
     KADIN,ERKEK,UNISEX;

@@ -2,6 +2,7 @@ package kullanici_kayit_sistemi;
 
 
 import Repositories.entities.Sepet;
+import Repositories.entities.Urun;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class Kullanici {
     private LocalDate dogumTarihi;
     private Sepet guncelSepet;
     private ArrayList<Sepet> satinAlimGecmisi;
+    private ArrayList<Urun> favoriList;
     
     public ArrayList<Sepet> getSatinAlimGecmisi() {
         return satinAlimGecmisi;
@@ -35,6 +37,15 @@ public class Kullanici {
         this.kayitTarihi = LocalDate.now();
         this.satinAlimGecmisi = new ArrayList<Sepet>();
         this.guncelSepet = new Sepet();
+        this.favoriList = new ArrayList<>();
+    }
+
+    public ArrayList<Urun> getFavoriList() {
+        return favoriList;
+    }
+
+    public void setFavoriList(ArrayList<Urun> favoriList) {
+        this.favoriList = favoriList;
     }
 
     public Sepet getGuncelSepet() {
