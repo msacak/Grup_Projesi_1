@@ -70,7 +70,7 @@ public class Urun {
     @Override
     public String toString() {
 
-        System.out.printf("Kiyafet{id=%d, urunAd='%s', fiyat=%.1f}", id, urunAd, fiyat);
+        System.out.printf("id=%d, urunAd='%s', fiyat=%.1f", id, urunAd, fiyat);
         return "";
     }
     
