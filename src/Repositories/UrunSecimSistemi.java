@@ -165,6 +165,7 @@ public class UrunSecimSistemi {
             }
         }
         kullanici.getSatinAlimGecmisi().add(sepet);
+        kullanici.setGuncelSepet(new Sepet()); ///////        SONRADAN EKLENDI KONTROL ET.
         for (Urun urun : sepet.getUrunArrayList()) {
             Urun siradakiUrun = db.findByID(urun.getId());
             siradakiUrun.setAdet(siradakiUrun.getAdet() - urun.getAdet());

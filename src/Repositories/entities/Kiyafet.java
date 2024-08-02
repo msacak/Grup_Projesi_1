@@ -59,7 +59,7 @@ public class Kiyafet extends Urun{
 
     @Override
     public String toString() {
-        System.out.printf("Kiyafet{id=%-5d urunAd='%-10s fiyat=%7.1f TL}", getId(), getUrunAd(), getFiyat());
+        System.out.printf("id=%-5d urunAd='%-10s fiyat=%7.1f TL", getId(), getUrunAd(), getFiyat());
         return "";
     }
     //System.out.printf("Kiyafet{id=%-5d, urunAd='%-15s', fiyat=%8.1f TL}", getId(), getUrunAd(), getFiyat());
