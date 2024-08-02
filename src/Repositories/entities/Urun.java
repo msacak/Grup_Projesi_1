@@ -69,11 +69,9 @@ public class Urun {
 
     @Override
     public String toString() {
-        return "Urun{" +
-                "id=" + getId() +
-                ", urunAd='" + getUrunAd() + '\'' +
-                ", fiyat=" + getFiyat() +
-                '}';
+
+        System.out.printf("Kiyafet{id=%d, urunAd='%s', fiyat=%.1f}", id, urunAd, fiyat);
+        return "";
     }
     
     public String detayliGoruntule() {
@@ -82,4 +80,9 @@ public class Urun {
     
     //tostring -> id, ürün adı, fiyat göstersin
     // ürünü seçtikten sonra detaylı toString göster. iki toString yazacaksın.
+    // "Urun{" +
+    //                "id=" + getId() +
+    //                ", urunAd='" + getUrunAd() + '\'' +
+    //                ", fiyat=" + getFiyat() +
+    //                '}'
 }

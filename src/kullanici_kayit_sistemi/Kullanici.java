@@ -35,7 +35,7 @@ public class Kullanici {
         this.kullaniciCount++;
         this.id = kullaniciCount;
         this.kayitTarihi = LocalDate.now();
-        this.satinAlimGecmisi = new ArrayList<Sepet>();
+        this.satinAlimGecmisi = new ArrayList<>();
         this.guncelSepet = new Sepet();
         this.favoriList = new ArrayList<>();
     }

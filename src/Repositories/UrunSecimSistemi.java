@@ -47,7 +47,6 @@ public class UrunSecimSistemi {
                 db.save(kiyafet);
             }
         }
-        System.out.println(kiyafetList);
 
     }
 
