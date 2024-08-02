@@ -43,7 +43,7 @@ public class UrunSecimSistemi {
                 kiyafet.setTur(turArr[random.nextInt(ETur.values().length)]);
                 Integer adet = random.nextInt(1, 21);
                 kiyafet.setAdet(adet);
-                kiyafet.setSepetLimiti(adet * 3 / 4);
+                kiyafet.setSepetLimiti((int) Math.ceil(adet * 3 / 4.0));
                 db.save(kiyafet);
             }
         }
@@ -53,11 +53,13 @@ public class UrunSecimSistemi {
 
     public static void welcomeMenu(Kullanici kullanici) {
         Sepet sepet;
-        if (kullanici == null) sepet = new Sepet();
-        else sepet = kullanici.getGuncelSepet();
+        sepet = new Sepet();
+
 
         System.out.println("##### MODA PATIKASI #####");
         while (true) {
+            if(kullanici!=null)   sepet = kullanici.getGuncelSepet();
+
             System.out.println("""
                     1- Urun listele
                     2- Urun incele
@@ -66,6 +68,8 @@ public class UrunSecimSistemi {
                     5- Sepetten ürün çıkar
                     6- Sepetten ürün azalt
                     7- Sepetten tüm ürünleri sil
+                    8- Sipariş geçmişimi görüntüle
+                    9- Bakiyeme para at
                     0- Çıkış yap
                     """);
             System.out.print("Seciminiz: ");
@@ -88,9 +92,7 @@ public class UrunSecimSistemi {
                     break;
                 }
                 case 4: {
-                    alisverisiTamamla(kullanici, sepet);
-                    sepet = new Sepet() {
-                    };
+                    kullanici = alisverisiTamamla(kullanici, sepet);
                     break;
                 }
                 case 5: {
@@ -102,9 +104,16 @@ public class UrunSecimSistemi {
                     break;
                 case 7:
                     sepettenTumUrunleriSil(sepet);
+                    break;
+                case 8:
+                    if(kullanici!=null) KullaniciKayitSistemi.siparisGecmisimiGoruntule(kullanici);
+                    break;
+                case 9:
+                    if(kullanici!=null) KullaniciKayitSistemi.bakiyeOlustur(kullanici);
             }
         }
     }
+
 
     private static void sepettenTumUrunleriSil(Sepet sepet) {
         sepet.getUrunArrayList().removeAll(sepet.getUrunArrayList());
@@ -154,25 +163,95 @@ public class UrunSecimSistemi {
     }
 
     private static Kullanici alisverisiTamamla(Kullanici kullanici, Sepet sepet) {
-        int i = 0;
+
         while (kullanici == null) {
-            System.out.println("Alisverisi tamamlamak icin hesabiniza giris yapmaniz gerekiyor");
-            kullanici = KullaniciKayitSistemi.girisYap();
-            i++;
-            if (i > 3) {
-                System.out.println("3 kere başarısız giriş yaptınız.");
-                return null;
+            System.out.println("Alışverişi tamamlamak için giriş yapınız ya da kayıt olunuz.");
+            System.out.println("1- Giris yap");
+            System.out.println("2- Kayıt ol");
+            System.out.println("0- Ana menüye dön");
+            System.out.println("Seciminiz: ");
+            int secim = sc.nextInt();
+            sc.nextLine();
+            switch (secim) {
+                case 1:
+                    kullanici = girisYapSepet();
+                    if(kullanici!=null){
+                        eskiSepetEklensinMi(kullanici,sepet);
+                        sepet = kullanici.getGuncelSepet();
+                    }
+
+                    break;
+                case 2:
+                    kullanici = KullaniciKayitSistemi.kullaniciKaydi();
+
+
+                    break;
+                case 0:
+                    System.out.println("Ana menüye dönüyorsunuz.");
+                    break;
+                default:
+                    System.out.println("Lütfen belirtilen aralıklarda seçim yapınız.");
+                    break;
+
             }
         }
+
+
+        System.out.println("Alisverisi onaylıyor musunuz ?");
+        System.out.println("1-Evet  2-Hayir");
+        int onay = sc.nextInt();
+        sc.nextLine();
+        if(onay!=1){
+            System.out.println("Alışverişi onaylamadınız, ana menüye yönlendiriliyorsunuz.");
+            return kullanici;
+        }
+        if(sepet.getToplamFiyat()> kullanici.getBakiye()){
+            System.out.println("Bakiyeniz bu işlem için yetersizdir....");
+            return kullanici;
+        }
+
         kullanici.getSatinAlimGecmisi().add(sepet);
         kullanici.setGuncelSepet(new Sepet()); ///////        SONRADAN EKLENDI KONTROL ET.
+
         for (Urun urun : sepet.getUrunArrayList()) {
             Urun siradakiUrun = db.findByID(urun.getId());
             siradakiUrun.setAdet(siradakiUrun.getAdet() - urun.getAdet());
         }
         System.out.println("Alisverisiniz gerceklesmistir, kargo bilgileri icin bilgilendirme maili alacaksiniz.  " +
                 "Bizi sectiginiz icin tesekkur ederiz!");
+        kullanici.setGuncelSepet(new Sepet());
         return kullanici;
+    }
+
+    private static void eskiSepetEklensinMi(Kullanici kullanici,Sepet sepet){
+        System.out.println("Eski sepetinizden kalan ürünleri yeni sepetinize eklemek ister misiniz ?");
+        System.out.println("1-Evet  2-Hayır");
+        System.out.print("Seçiminiz: ");
+        int eklesinMi = sc.nextInt();
+        sc.nextLine();
+        if(eklesinMi==1){
+            if(!kullanici.getGuncelSepet().getUrunArrayList().isEmpty()){
+                kullanici.getGuncelSepet().getUrunArrayList().addAll(sepet.getUrunArrayList());
+                System.out.println("Eski sepetiniz yeni sepetinize eklenmiştir. ####");
+            }
+
+        }
+
+    }
+
+
+    private static Kullanici girisYapSepet() {
+
+        Kullanici kullanici = KullaniciKayitSistemi.girisYap();
+        while (true) {
+            int i = 0;
+            if(kullanici!=null) return kullanici;
+            else i++;
+            if(i > 3) {
+                System.out.println("3 kere başarısız giriş yaptınız.");
+                return null;
+            }
+        }
     }
 
     public static void sepetiGoruntule(Sepet sepet) {
@@ -236,7 +315,7 @@ public class UrunSecimSistemi {
 
     private static void favorilerimeEkle(Urun urun, Kullanici kullanici) {
         ArrayList<Urun> favList = kullanici.getFavoriList();
-        if(!favList.contains(urun)){
+        if (!favList.contains(urun)) {
             favList.add(urun);
             System.out.println("Ürün başarıyla favorilerinize eklendi.");
             return;
@@ -264,7 +343,7 @@ public class UrunSecimSistemi {
         }
     }
 
-    public static void sepeteEkle(Urun urun,Sepet sepet){
+    public static void sepeteEkle(Urun urun, Sepet sepet) {
         while (true) {
             if (urun.getAdet() == 0) {
                 System.out.println("Urun stokta bulunmamaktadır");
@@ -272,7 +351,7 @@ public class UrunSecimSistemi {
             }
             int sepettekiAdet = 0;
             Urun tempUrun = null;
-            for (Urun urunX:sepet.getUrunArrayList()){
+            for (Urun urunX : sepet.getUrunArrayList()) {
                 if (urunX.getId().equals(urun.getId())) {
                     sepettekiAdet = urunX.getAdet();
                     tempUrun = urunX;
@@ -280,21 +359,22 @@ public class UrunSecimSistemi {
                 }
             }
             System.out.println("Bu üründen " + urun.getAdet() + " adet bulunmaktadir.");
-            if (tempUrun != null) System.out.println("Sepetinizde bu urunden " + sepettekiAdet +" adet bulunmaktadir.");
+            if (tempUrun != null)
+                System.out.println("Sepetinizde bu urunden " + sepettekiAdet + " adet bulunmaktadir.");
             System.out.print("Kaç adet almak istersiniz?(Geri donmek icin 0 tuslayiniz): ");
             int adet = secimYap() + sepettekiAdet;
-            if (adet > urun.getSepetLimiti()){
+            if (adet > urun.getSepetLimiti()) {
                 System.out.println("Maalesef ayni urunden cok sayida almaya calisiyorsunuz.  Talep " +
                         "gerceklestirilemedi.");
                 return;
             }
-            if (adet == 0){
+            if (adet == 0) {
                 System.out.println("Satin alimdan vazgecildi, ana menuye donuluyor...");
                 return;
             }
 
             if (adetCheck(urun, adet)) {
-                if (tempUrun != null){
+                if (tempUrun != null) {
                     tempUrun.setAdet(adet);
                     sepet.setToplamFiyat(sepet.getToplamFiyat() + urun.getFiyat() * (adet - sepettekiAdet));
                     System.out.println("Sepetinizdeki adet guncellenmistir.");
@@ -306,8 +386,7 @@ public class UrunSecimSistemi {
                 System.out.println("Ürün sepete eklenmiştir.");
                 return;
 
-            }
-            else {
+            } else {
                 System.out.println("Bu üründen yeterli sayida stoğumuz bulunmamaktadir.");
             }
         }

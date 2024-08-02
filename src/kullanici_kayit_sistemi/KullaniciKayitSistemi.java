@@ -105,6 +105,14 @@ public class KullaniciKayitSistemi  {
 
     }
 
+    public static void bakiyeOlustur(Kullanici kullanici){
+        System.out.print("Bakiyenize ne kadar para yüklemek istiyorsunuz: ");
+        int eklenecekBakiye = scanner.nextInt();
+        scanner.nextLine();
+        kullanici.setBakiye(kullanici.getBakiye()+eklenecekBakiye);
+        System.out.println("Yeni bakiyeniz = "+kullanici.getBakiye());
+    }
+
     private static int userMenuFunctions(int secim, Kullanici kullanici) {
         switch (secim) {
             case 1: {
@@ -142,7 +150,7 @@ public class KullaniciKayitSistemi  {
         return secim;
     }
     
-    private static void siparisGecmisimiGoruntule(Kullanici kullanici) {
+    public static void siparisGecmisimiGoruntule(Kullanici kullanici) {
         for (Sepet sepet:kullanici.getSatinAlimGecmisi()){
             UrunSecimSistemi.sepetiGoruntule(sepet);
             System.out.println("-----------");
@@ -234,7 +242,7 @@ public class KullaniciKayitSistemi  {
         }
     }
 
-    private static Kullanici kullaniciKaydi() {
+    public static Kullanici kullaniciKaydi() {
         LocalDate dogumTarihi;
         Kullanici kullanici;
         dogumTarihi = dogumTarihiAl();

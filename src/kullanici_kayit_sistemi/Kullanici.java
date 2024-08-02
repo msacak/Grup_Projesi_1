@@ -22,7 +22,16 @@ public class Kullanici {
     private Sepet guncelSepet;
     private ArrayList<Sepet> satinAlimGecmisi;
     private ArrayList<Urun> favoriList;
-    
+    private int bakiye;
+
+    public int getBakiye() {
+        return bakiye;
+    }
+
+    public void setBakiye(int bakiye) {
+        this.bakiye = bakiye;
+    }
+
     public ArrayList<Sepet> getSatinAlimGecmisi() {
         return satinAlimGecmisi;
     }
